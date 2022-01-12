@@ -365,7 +365,7 @@ Dentro do componente `Login`, que é renderizado na rota `/`, crie um formulári
 
   * Crie um botão com o texto `Entrar`. Este botão deverá ter o atributo `data-testid="login-submit-button"`.
 
-  * O botão para entrar só deve ser habilitado caso o nome digitado tenha mais de 3 caracteres.
+  * O botão para entrar só deve ser habilitado caso o nome digitado tenha 3 ou mais caracteres.
 
   * Ao clicar no botão `Entrar`, utilize a função `createUser` da `userAPI` para salvar o nome digitado. A função `createUser` espera receber como argumento um objeto com as informações da pessoa: 
   ```
