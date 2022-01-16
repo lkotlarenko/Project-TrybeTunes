@@ -1,10 +1,14 @@
 import React from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom/';
 
 class App extends React.Component {
   render() {
     return (
-        <p>TrybeTunes</p>
-        <h1>Hello world! :D</h1>
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/" component={ Login } />
+        </Switch>
+      </BrowserRouter>
     );
   }
 }
