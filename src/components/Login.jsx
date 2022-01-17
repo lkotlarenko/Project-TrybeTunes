@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import * as userAPI from '../services/userAPI';
+import Loading from './Loading';
 
 const MIN_LENGTH = 3;
 class Login extends Component {
@@ -10,6 +11,7 @@ class Login extends Component {
     this.state = {
       username: '',
       isDisabled: true,
+      isLoading: false,
     };
   }
 
@@ -28,12 +30,26 @@ class Login extends Component {
     }, this.validateUsername);
   }
 
+  changeRoute = () => {
+    const { history } = this.props;
+    history.push('/search');
+  }
+
+  loginUser = (e) => {
+    e.preventDefault();
+    const { username } = this.state;
+    this.setState({ isLoading: true });
+    userAPI.createUser({ name: username }).then(() => {
+      this.changeRoute();
+    });
+  }
+
   render() {
-    const { username, isDisabled } = this.state;
+    const { username, isDisabled, isLoading } = this.state;
     return (
       <main className="loginContainer">
         <div data-testid="page-login">
-          <form>
+          <form onSubmit={ (e) => this.loginUser(e) }>
             <label htmlFor="username">
               Username
               <input
@@ -48,12 +64,17 @@ class Login extends Component {
             </label>
 
             <button
-              type="button"
+              type="submit"
               data-testid="login-submit-button"
               disabled={ isDisabled }
             >
               Entrar
             </button>
+            {
+              isLoading ? (
+                <Loading />
+              ) : null
+            }
           </form>
         </div>
       </main>
