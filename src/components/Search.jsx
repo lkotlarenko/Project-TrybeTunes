@@ -16,19 +16,20 @@ class Search extends Component {
       searchResult: [],
       didSearch: false,
     };
+
+    this.searchArtist = this.searchArtist.bind(this);
   }
 
+  // create a bool that checks if search length has MIN_LENGTH, then set state with it
   validateSearch = () => {
     const { search } = this.state;
     const validSearch = search.length < MIN_LENGTH;
-
     this.setState({
       isDisabled: validSearch,
     });
-
-    this.searchArtist = this.searchArtist.bind(this);
   };
 
+  // receive parameters from target > set values on state > run validateSearch
   handleChange = ({ name, value }) => {
     this.setState(
       {
@@ -38,6 +39,7 @@ class Search extends Component {
     );
   };
 
+  // called on submit | prevent default > setState for indicate loading & save search input to be used on the result title text
   callSearch = (e) => {
     const { search } = this.state;
     e.preventDefault();
@@ -50,6 +52,7 @@ class Search extends Component {
 
   checkSearch = () => {
     const { searchResult } = this.state;
+    // if search response from api (now on state) length is 0 than setState indicating an empty search response
     if (searchResult.length === 0) {
       this.setState({
         emptySearch: true,
@@ -61,6 +64,7 @@ class Search extends Component {
     }
   };
 
+  // call API > save resolve to state, set needed state values & runs checkSearch
   async searchArtist() {
     const { search } = this.state;
     try {
@@ -89,6 +93,7 @@ class Search extends Component {
       didSearch,
       artist,
     } = this.state;
+    // form that onSubmit runs callSearch ('e' parameter used on preventDefault to prevent default form behavior)
     const searchBar = (
       <form onSubmit={ (e) => this.callSearch(e) }>
         <label htmlFor="search-bar">
@@ -117,10 +122,13 @@ class Search extends Component {
     return (
       <div data-testid="page-search">
         <Header />
+        {/* if isLoading render Loading component, otherwise render searchBar (form to search) */}
         {isLoading ? <Loading /> : searchBar}
+        {/* if a search is done and returns an non empty result, render result title text */}
         {didSearch && !emptySearch
           ? <p>{`Resultado de álbuns de: ${artist}`}</p>
           : null}
+        {/* render AlbumList passing api resolve as props (+ prop to inform of an empty result) */}
         <AlbumList emptyResult={ emptySearch } searchResolve={ searchResult } />
       </div>
     );

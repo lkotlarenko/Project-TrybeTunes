@@ -32,7 +32,7 @@ class AlbumList extends Component {
 }
 
 AlbumList.propTypes = {
-  searchResolve: PropTypes.array,
+  searchResolve: PropTypes.arrayOf(PropTypes.object),
   emptyResult: PropTypes.bool,
 }.isRequired;
 
