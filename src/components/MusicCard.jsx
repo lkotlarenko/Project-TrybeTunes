@@ -25,7 +25,7 @@ class MusicCard extends Component {
     const { music } = this.props;
     try {
       // gets an array with favorite songs
-      const favorites = await favAPI.getFavoriteSongs(music);
+      const favorites = await favAPI.getFavoriteSongs();
       // try to find the music received as prop on array of favorites
       const wasFavorited = favorites.find((song) => (
         song.trackId === music.trackId));
