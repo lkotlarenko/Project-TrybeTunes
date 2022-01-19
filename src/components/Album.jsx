@@ -23,18 +23,21 @@ class Album extends Component {
     this.getAlbumMusics();
   }
 
+  // call API using id from URL
   async getAlbumMusics() {
     const { match: { params: { id } } } = this.props;
     try {
       const resolve = await getMusics(id);
+      // get album & artist name
       const albumName = resolve[0].collectionName;
       const artist = resolve[0].artistName;
-      resolve.splice(0, 1);
+      // fix req 7 just needed an alternative way to get the array ;-;
+      const album = resolve.filter(({ kind }) => kind === 'song');
       this.setState(
         {
           artist,
           albumName,
-          album: resolve,
+          album,
           isLoading: false,
         },
       );
