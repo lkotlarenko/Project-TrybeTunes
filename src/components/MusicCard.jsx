@@ -17,7 +17,7 @@ class MusicCard extends Component {
   }
 
   componentDidMount() {
-    // call getFavorites when mounted
+    // calls getFavorites when mounted
     this.getFavorites();
   }
 
@@ -27,10 +27,10 @@ class MusicCard extends Component {
       // gets an array with favorite songs
       const favorites = await favAPI.getFavoriteSongs();
       // try to find the music received as prop on array of favorites
-      const wasFavorited = favorites.find((song) => (
+      const wasFavorite = favorites.find((song) => (
         song.trackId === music.trackId));
-        // if theres a favorited song with same trackId then set state of isFavorite
-      if (wasFavorited) {
+        // if theres a favorite song with same trackId then set state of isFavorite
+      if (wasFavorite) {
         this.setState(
           {
             isFavorite: true,
@@ -44,10 +44,10 @@ class MusicCard extends Component {
 
   // function called on every checkbox change, receive checked value then use it to add or remove the song (using favAPI)
   async updateFavorites({ target: { checked } }) {
-    const { music } = this.props;
+    const { music, status } = this.props;
     this.setState({ isLoading: true });
     try {
-      // depending on target checked value set favorited or not
+      // depending on target checked value, set favorite or not
       if (checked) {
         await favAPI
           .addSong(music)
@@ -55,7 +55,8 @@ class MusicCard extends Component {
       } else {
         await favAPI
           .removeSong(music)
-          .then(() => this.setState({ isFavorite: false, isLoading: false }));
+          // sets loading then calls for status (function on parent component Favorites) after checkbox change
+          .then(() => this.setState({ isFavorite: false, isLoading: false }, status));
       }
     } catch (error) {
       console.error(error);
@@ -93,11 +94,20 @@ class MusicCard extends Component {
 }
 
 MusicCard.propTypes = {
+  // status is a function passed through props when rendering from Favorites page, so that it can reload the list after changing favorite checkbox
+  status: PropTypes.func,
   music: PropTypes.shape({
-    trackName: PropTypes.string,
-    previewUrl: PropTypes.string,
-    trackId: PropTypes.string,
-  }),
-}.isRequired;
+    trackName: PropTypes.string.isRequired,
+    previewUrl: PropTypes.string.isRequired,
+    // accept two types of props https://stackoverflow.com/questions/41808428/react-proptypes-allow-different-types-of-proptypes-for-one-prop
+    trackId: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number]).isRequired,
+  }).isRequired,
+};
+
+MusicCard.defaultProps = {
+  status: () => {},
+};
 
 export default MusicCard;
