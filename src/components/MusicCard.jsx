@@ -13,6 +13,33 @@ class MusicCard extends Component {
     };
 
     this.updateFavorites = this.updateFavorites.bind(this);
+    this.getFavorites = this.getFavorites.bind(this);
+  }
+
+  componentDidMount() {
+    // call getFavorites when mounted
+    this.getFavorites();
+  }
+
+  async getFavorites() {
+    const { music } = this.props;
+    try {
+      // gets an array with favorite songs
+      const favorites = await favAPI.getFavoriteSongs(music);
+      // try to find the music received as prop on array of favorites
+      const wasFavorited = favorites.find((song) => (
+        song.trackId === music.trackId));
+        // if theres a favorited song with same trackId then set state of isFavorite
+      if (wasFavorited) {
+        this.setState(
+          {
+            isFavorite: true,
+          },
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   // function called on every checkbox change, receive checked value then use it to add or remove the song (using favAPI)
@@ -20,6 +47,7 @@ class MusicCard extends Component {
     const { music } = this.props;
     this.setState({ isLoading: true });
     try {
+      // depending on target checked value set favorited or not
       if (checked) {
         await favAPI
           .addSong(music)
@@ -57,6 +85,7 @@ class MusicCard extends Component {
           />
           Favorita
         </label>
+        {/* loads Loading component when isLoading is true */}
         {isLoading && <Loading />}
       </section>
     );
